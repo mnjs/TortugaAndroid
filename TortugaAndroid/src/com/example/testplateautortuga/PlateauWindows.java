@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 public class PlateauWindows extends MainActivity {
 
+	String save = null;
 /*	boolean multi;
 	boolean modeEclosion;
 	
@@ -18,8 +19,17 @@ public class PlateauWindows extends MainActivity {
 	protected void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);		
-		setContentView(new Plateau(this,false,false));
-
+		setContentView(new Plateau(this,false,false));	
 		
+	}
+	
+	protected void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        save = "coucou";
+    }
+	
+	public Object onRetainNonConfigurationInstance() {
+	    System.out.println(save);
+	    return null;
 	}
 }

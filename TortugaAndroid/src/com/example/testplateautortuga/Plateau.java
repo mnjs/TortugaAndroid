@@ -24,6 +24,7 @@ import android.content.DialogInterface;
 import android.graphics.*;
 //import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 //import android.widget.LinearLayout;
@@ -37,7 +38,7 @@ import android.view.View;
 
 @SuppressLint("ViewConstructor")
 public class Plateau extends View{
-
+	
 	/** 
 	 * <b>Mode de Jeu Contre IA</b>
 	 * <p>
@@ -178,8 +179,7 @@ public class Plateau extends View{
 		clTor2 = -1;
 		saute = -1;
 		win = false;
-		
-		//addMouseListener(new MouseEV());
+
 		oeufT = false;
 		conf=new Configuration(variante);
 		conf.changePlayer();
@@ -691,5 +691,6 @@ public class Plateau extends View{
 			System.out.println((byte) (choix+1));
 			return (byte) (choix+1);			
 		}
+		
 
 }
