@@ -4,5 +4,13 @@
     <string name="app_name">TestPlateauTortuga</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="todo">TODO</string>
+    <string name="un_joueur">Player vs IA</string>
+    <string name="jouer">Play</string>
+    <string name="deux_joueurs">Player vs Player</string>
+    <string name="difficulte">Choose a difficulty</string>
+    <string name="regles">Rules</string>
+    <string name="oubli_difficulte">Choose a difficulty</string>
+    <string name="oubli_mode">Select a game mode</string>
 
 </resources>

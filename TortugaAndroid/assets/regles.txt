@@ -1,0 +1,29 @@
+RAPPEL DES REGLES DE BASE
+~~~ BUT DU JEU ~~~
+Amener une de ses tortues sur la case la plus extrême du camp adverse.
+~~~ PREPARATION ~~~
+Chaque joueur dispose ses 8 tortues sur leurs bases de départ.
+~~~ DEPLACEMENTS ET SAUTS ~~~
+Un tirage au sort détermine qui commence.
+A tour de rôle chaque joueur déplace une de ses tortues selon les règles suivantes :
+- une tortue se déplace toujours en avançant, tout droit ou sur le côté, mais jamais en reculant.
+- si elle ne saute pas (voir ci-dessous), une tortue ne se déplace que d'une seule case.
+- une tortue peut sauter au dessus d'une tortue amie, adverse ou neutralisée (voir ci dessous), toujours vers l'avant.
+- un saut commençant par une tortue amie ou neutralisée n'est pas obligatoire.
+- mais sauter au dessus d'une tortue adverse est obligatoire.
+- dès qu'un saut a été entamé, il doit obligatoirement être mené à son terme en sautant tant que cela est possible.
+- dans un même coup, une tortue peut sauter au dessus de tortues amies et neutralisées ou elle peut sauter au dessus
+de tortues ennemies et neutralisées. En revanche une tortue ne doit pas sauter dans le même tour au dessus de
+tortues amies et ennemies.
+~~~ EFFET DES SAUTS ~~~
+- Une tortue amie sautée n'est pas retournée (aucun effet).
+- Une tortue adverse sautée est immédiatement retournée sur le dos. Elle devient alors une tortue neutralisée,
+incapable de se déplacer.
+- Une tortue neutralisée (sur le dos) sautée est immédiatement retournée sur ses pattes. Selon son intérêt, le joueur
+qui a réalisé le saut choisit de l'orientation à lui donner, il peut intégrer cette tortue à son équipe ou à l'équipe
+adverse (ce qui est parfois avantageux) en la tournant dans le sens des tortues adverses.
+~~~ FIN DE LA PARTIE ~~~
+Le premier joueur qui atteint avec l'une de ses tortues la case la plus extrême du camp adverse gagne la partie.
+Cas particulier : si un joueur est mis dans l'impossibilité de jouer, il perd la partie.
+
+

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Tortuga</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="todo">TODO</string>
+    <string name="un_joueur">Joueur contre IA</string>
+    <string name="deux_joueurs">Joueur contre Joueur</string>
+    <string name="jouer">Jouer</string>
+    <string name="difficulte">Choisir une difficulté :</string>
+    <string name="regles">Règles</string>
+    <string name="oubli_difficulte">Choisissez une difficulté</string>
+    <string name="oubli_mode">Choisissez un mode de jeu</string>
+
+</resources>

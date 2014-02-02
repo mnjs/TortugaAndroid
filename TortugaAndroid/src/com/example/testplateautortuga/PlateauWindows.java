@@ -2,34 +2,23 @@ package com.example.testplateautortuga;
 
 import android.os.Bundle;
 
-
 public class PlateauWindows extends MainActivity {
-
-	String save = null;
-/*	boolean multi;
-	boolean modeEclosion;
-	
-	public PlateauWindows(boolean multi,boolean modeEclosion)
-	{
-		this.multi = multi;
-		this.modeEclosion = modeEclosion;
-	}*/
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);		
-		setContentView(new Plateau(this,false,false));	
+		Bundle b = getIntent().getExtras();
+		boolean mode = b.getBoolean("mode");
+		boolean eclosion = b.getBoolean("eclosion");
+		int difficulte = b.getInt("difficulte");
 		
+		setContentView(new Plateau(this,mode,eclosion,difficulte));	
 	}
 	
-	protected void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-        save = "coucou";
-    }
-	
-	public Object onRetainNonConfigurationInstance() {
-	    System.out.println(save);
-	    return null;
+	public void onConfigurationChanged(
+			android.content.res.Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
 	}
+
 }
