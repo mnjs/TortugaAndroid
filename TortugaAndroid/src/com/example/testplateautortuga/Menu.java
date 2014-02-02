@@ -27,6 +27,13 @@ public class Menu extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.menu);
 
+		Intent intent = new Intent(Menu.this,
+				PlateauWindows.class);
+		intent.putExtra("mode", false);
+		intent.putExtra("eclosion", false);
+		intent.putExtra("difficulte",1);
+		startActivity(intent);
+		/*
 		String fontPath = "fonts/font.TTF";
 		final Button un_joueur = (Button) findViewById(R.id.button1);
 		final Button deux_joueurs = (Button) findViewById(R.id.button2);
@@ -135,7 +142,7 @@ public class Menu extends Activity {
 				}
 
 			}
-		});
+		});*/
 
 	}
 }

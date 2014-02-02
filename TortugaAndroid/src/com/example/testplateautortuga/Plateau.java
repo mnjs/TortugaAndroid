@@ -105,7 +105,7 @@ public class Plateau extends View {
 	private byte choixTortue = 0;
 	private boolean choix = false;
 	private int difficulte = 0;
-	
+
 	private Canvas canvas;
 
 	private boolean threadD = false;
@@ -214,13 +214,14 @@ public class Plateau extends View {
 	 *            {@link Plateau#MULTI_IA} ou {@link Plateau#MULTI_DEUX_JOUEURS}
 	 *            </p>
 	 */
-	public Plateau(Context context, boolean multi, boolean variante, int difficulte) {
+	public Plateau(Context context, boolean multi, boolean variante,
+			int difficulte) {
 		super(context);
 		this.context = context;
 		this.multi = multi;
 		this.variante = variante;
 		this.difficulte = difficulte;
-		
+
 		tPoly = new Polygon[37];
 		tPoint = new Point[37];
 		tcercle = new ArrayList<Byte>();
@@ -681,13 +682,33 @@ public class Plateau extends View {
 				if (choixTortue != 0) {
 					conf.coupJoue(Configuration.en81(clTor1), choixTortue,
 							Configuration.en81(clTor2));
+
 					choixTortue = 0; // remise a niveau
+					choix = false;
 					tcercle.clear();
 					if (saute == -1)
 						saute = 3;
 					clTor1 = clTor2;
 					clTor2 = -1;
+
+					transTortue.clear();
+					clTor1 = -1;
+					clTor2 = -1;
+					conf.changePlayer();
+					tcercle.clear();
+					if (multi) {
+						affPossibleMove();
+					}
+					saute = -1;
+					verifWin();
 					invalidate();
+
+					if (!multi && conf.getPlayer() == 2 && !win && !threadD) {
+						// conf.printHexRV();
+						threadD = true;
+						Swingworker sw = new Swingworker();
+						sw.execute();
+					}
 				}
 
 			}
@@ -766,8 +787,8 @@ public class Plateau extends View {
 									if (coup[2] == 3) { // Si l'on doit
 														// retourner une tortue
 										choix = true;
-										invalidate();
 										a = true;
+
 									} else if (coup[2] != 0) {
 										conf.coupJoue(
 												Configuration.en81(clTor1),
@@ -838,6 +859,7 @@ public class Plateau extends View {
 		return true;
 	}
 
+	@SuppressWarnings("unused")
 	private void playSound(int resId) {
 		if (mPlayer != null) {
 			mPlayer.stop();
