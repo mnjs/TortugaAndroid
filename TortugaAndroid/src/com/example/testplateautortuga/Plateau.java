@@ -17,9 +17,12 @@ package com.example.testplateautortuga;
 import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 //import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -29,6 +32,8 @@ import android.graphics.Rect;
 import android.media.MediaPlayer;
 //import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Looper;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -123,6 +128,7 @@ public class Plateau extends View {
 	private int tailleTortueChoix;
 
 	private MediaPlayer mPlayer = null;
+	private PlateauWindows plateau = null;
 	// ------------------------------------------------------------------------------------------
 
 	private int l;
@@ -213,11 +219,14 @@ public class Plateau extends View {
 	 * @param multi
 	 *            {@link Plateau#MULTI_IA} ou {@link Plateau#MULTI_DEUX_JOUEURS}
 	 *            </p>
+	 * @param plateauWindows
+	 * @param application
 	 */
 	public Plateau(Context context, boolean multi, boolean variante,
-			int difficulte) {
+			int difficulte, PlateauWindows plateau) {
 		super(context);
 		this.context = context;
+		this.plateau = plateau;
 		this.multi = multi;
 		this.variante = variante;
 		this.difficulte = difficulte;
@@ -566,17 +575,42 @@ public class Plateau extends View {
 	 * remet le plateau a z�ro
 	 */
 	private void reset() {
-		conf = new Configuration(variante);
-		win = false;
-		invalidate();
-		affPossibleMove();
+
+		AlertDialog alertDialog;
+		alertDialog = new AlertDialog.Builder(context).create();
+		alertDialog.setTitle("Partie finie");
+
+		alertDialog.setMessage("Voulez vous rejouer ?");
+
+		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Oui",
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						if (conf.whoWin() == 1) { // Si les rouges gagnent
+							conf = new Configuration(variante);
+							conf.changePlayer();
+						} else {
+							conf = new Configuration(variante);
+						}
+						win = false;
+						invalidate();
+						affPossibleMove();
+					}
+				});
+		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Non",
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						plateau.finish();
+					}
+				});
+		alertDialog.show();
 	}
 
 	/**
 	 * affiche un dialogue et remet le plateau a z�ro si quelqu'un gagne
 	 */
 	private void verifWin() {
-
 		if ((conf.whoWin() == 1) || (conf.whoWin() == 2)) {
 			AlertDialog alertDialog;
 			alertDialog = new AlertDialog.Builder(context).create();
@@ -628,7 +662,7 @@ public class Plateau extends View {
 	 * @return si l'utilisateur a cliqu� sur le bouton termin�
 	 */
 
-	private void isChoixClick(int x, int y) {
+	private byte isChoixClick(int x, int y) {
 		Rect recTortueRouge = new Rect((int) (xChoixRouge),
 				(int) (yChoixRouge), (int) (xChoixRouge) + tailleTortueChoix,
 				(int) (yChoixRouge) + tailleTortueChoix);
@@ -640,12 +674,15 @@ public class Plateau extends View {
 			choixTortue = 1;
 			choix = false;
 			invalidate();
+			return choixTortue;
 		}
 		if (recTortueVerte.contains(x, y)) {
 			choixTortue = 2;
 			choix = false;
 			invalidate();
+			return choixTortue;
 		}
+		return choixTortue;
 	}
 
 	public boolean isTerminerClick(int x, int y) {
@@ -659,14 +696,18 @@ public class Plateau extends View {
 			try {
 				// changer d'IA
 				conf = IA.meilleurConf(conf, (byte) difficulte);
+
 			} catch (CaseNonLibreException e) {
 				e.printStackTrace();
 			}
 			affPossibleMove();
 			postInvalidate();
-			verifWin();
 			threadD = false;
 			return null;
+		}
+
+		protected void onPostExecute(Void unused) {
+			verifWin();
 		}
 
 	}
@@ -683,9 +724,8 @@ public class Plateau extends View {
 					conf.coupJoue(Configuration.en81(clTor1), choixTortue,
 							Configuration.en81(clTor2));
 
-					choixTortue = 0; // remise a niveau
-					choix = false;
-					tcercle.clear();
+					choixTortue = 0; // remise a niveau choix = false;
+										// tcercle.clear();
 					if (saute == -1)
 						saute = 3;
 					clTor1 = clTor2;
@@ -701,10 +741,9 @@ public class Plateau extends View {
 					}
 					saute = -1;
 					verifWin();
-					invalidate();
 
-					if (!multi && conf.getPlayer() == 2 && !win && !threadD) {
-						// conf.printHexRV();
+					if (!multi && conf.getPlayer() == 2 && !win && !threadD) { //
+						conf.printHexRV();
 						threadD = true;
 						Swingworker sw = new Swingworker();
 						sw.execute();
@@ -712,42 +751,12 @@ public class Plateau extends View {
 				}
 
 			}
-		} else {
-			// playSound(R.raw.son);
+		} else { // playSound(R.raw.son);
+
 			if (evt.getAction() == MotionEvent.ACTION_DOWN) {
 				int x = (int) evt.getX();
 				int y = (int) evt.getY();
-				boolean terminee = affTerminee && isTerminerClick(x, y);
-				if (oeufC) {
-					if (conf.oeufsDispoEclo() > 0) {
-						try {
-							byte clic = tortueClique((int) evt.getX(),
-									(int) evt.getY());
-							if (tcercle.contains(clic)) {
-								conf.coupEclo(Configuration.en81(clic));
-							}
-							invalidate();
-						} catch (CaseNonLibreException e) {
-							System.err.println(e.getMessage());
-						}
-					}
-				}
-				oeufC = affOeuf
-						&& isOeufClick((int) evt.getX(), (int) evt.getY())
-						&& !oeufC && conf.oeufsDispoEclo() > 0;
 
-				if (oeufC) {
-					oeufT = true;
-				}
-
-				if ((conf.oeufsDispoEclo() == 0 && conf.getStockPlayerEclo() != 0)
-						|| terminee) {
-					conf.changePlayer();
-					terminee = false;
-					oeufT = false;
-					oeufC = false;
-					invalidate();
-				}
 				tcercle.clear();
 				invalidate();
 				if ((conf.player != 2 || multi) && !oeufT || oeufC) {
@@ -844,6 +853,7 @@ public class Plateau extends View {
 							verifWin();
 							invalidate();
 						}
+
 					}
 
 				}
@@ -852,11 +862,11 @@ public class Plateau extends View {
 					threadD = true;
 					Swingworker sw = new Swingworker();
 					sw.execute();
-
 				}
 			}
 		}
 		return true;
+
 	}
 
 	@SuppressWarnings("unused")
