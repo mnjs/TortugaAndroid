@@ -12,5 +12,8 @@
     <string name="regles">Règles</string>
     <string name="oubli_difficulte">Choisissez une difficulté</string>
     <string name="oubli_mode">Choisissez un mode de jeu</string>
+    <string name="choixTortue">Choix de la tortue</string>
+    <string name="victoireVert">Victoire des verts</string>
+    <string name="victoireRouge">Victoire des rouges</string>
 
 </resources>

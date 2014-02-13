@@ -12,5 +12,8 @@
     <string name="regles">Rules</string>
     <string name="oubli_difficulte">Choose a difficulty</string>
     <string name="oubli_mode">Select a game mode</string>
+    <string name="choixTortue">Turtle choice</string>
+    <string name="victoireVert">Green victory !</string>
+    <string name="victoireRouge">Red victory !</string>
 
 </resources>

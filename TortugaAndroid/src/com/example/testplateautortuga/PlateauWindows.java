@@ -1,6 +1,7 @@
 package com.example.testplateautortuga;
 
 import android.os.Bundle;
+import android.widget.ProgressBar;
 
 public class PlateauWindows extends MainActivity {
 	
@@ -13,7 +14,7 @@ public class PlateauWindows extends MainActivity {
 		boolean eclosion = b.getBoolean("eclosion");
 		int difficulte = b.getInt("difficulte");
 		
-		setContentView(new Plateau(this,mode,eclosion,difficulte));	
+		setContentView(new Plateau(this,mode,eclosion,difficulte,this));
 	}
 	
 	public void onConfigurationChanged(

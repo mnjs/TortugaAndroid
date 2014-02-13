@@ -24,13 +24,17 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 //import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ProgressBar;
 
 //import android.widget.LinearLayout;
 
@@ -97,8 +101,10 @@ public class Plateau extends View {
 			R.drawable.choix_vert);
 	Bitmap choixvertdroite = BitmapFactory.decodeResource(getResources(),
 			R.drawable.choix_vert_droite);
-	Bitmap textechoix = BitmapFactory.decodeResource(getResources(),
-			R.drawable.textechoix);
+	Bitmap winRouge = BitmapFactory.decodeResource(getResources(),
+			R.drawable.win_rouge);
+	Bitmap winVert = BitmapFactory.decodeResource(getResources(),
+			R.drawable.win_vert);
 
 	private Context context;
 
@@ -112,6 +118,7 @@ public class Plateau extends View {
 
 	private int longueurEcran = this.getHeight();
 	private int largeurEcran = this.getWidth();
+
 	private double yO;
 	private double xO;
 
@@ -122,7 +129,11 @@ public class Plateau extends View {
 
 	private int tailleTortueChoix;
 
+	private boolean a = false;
+	private ProgressBar bar;
+
 	private MediaPlayer mPlayer = null;
+	private PlateauWindows plateau = null;
 	// ------------------------------------------------------------------------------------------
 
 	private int l;
@@ -166,10 +177,12 @@ public class Plateau extends View {
 	/**
 	 * indique si il faut afficher le bouton terminer
 	 */
+	@SuppressWarnings("unused")
 	private boolean affTerminee;
 	/**
 	 * indique si il faut afficher l'oeuf en haut a gauche
 	 */
+	@SuppressWarnings("unused")
 	private boolean affOeuf;
 	/**
 	 * indique si le joueur est en mode placement d'oeuf
@@ -213,14 +226,20 @@ public class Plateau extends View {
 	 * @param multi
 	 *            {@link Plateau#MULTI_IA} ou {@link Plateau#MULTI_DEUX_JOUEURS}
 	 *            </p>
+	 * @param bar2
+	 * @param plateauWindows
+	 * @param application
 	 */
 	public Plateau(Context context, boolean multi, boolean variante,
-			int difficulte) {
+			int difficulte, PlateauWindows plateau) {
 		super(context);
 		this.context = context;
+		this.plateau = plateau;
 		this.multi = multi;
 		this.variante = variante;
 		this.difficulte = difficulte;
+
+		bar = new ProgressBar(context);
 
 		tPoly = new Polygon[37];
 		tPoint = new Point[37];
@@ -288,41 +307,13 @@ public class Plateau extends View {
 			l = (int) ((longueurEcran / 2 - longueurEcran / 30) / (5.5 * Math
 					.sqrt(3)));
 			if (choix) {
-				tailleTortueChoix = longueurEcran / 6;
-				xChoixRouge = largeurEcran / 6;
-				yChoixRouge = longueurEcran / 6;
-				xChoixVerte = (float) (largeurEcran / 1.2) - tailleTortueChoix;
-				yChoixVerte = longueurEcran / 6;
-
-				drawImage(textechoix, (float) (largeurEcran / 12),
-						(float) (largeurEcran / 18), tailleTortueChoix * 3,
-						tailleTortueChoix * 3 / 4);
-				drawImage(choixrouge, xChoixRouge, yChoixRouge,
-						tailleTortueChoix, tailleTortueChoix);
-				drawImage(choixvert, xChoixVerte, yChoixVerte,
-						tailleTortueChoix, tailleTortueChoix);
-				xO = (largeurEcran / 2 - (11 * l) / 2.);
-				yO = (longueurEcran / 1.5 - (7 * l * Math.sqrt(3)) / 2.);
+				choixTortuePortrait();
 			}
 		} else {
 			l = (int) ((longueurEcran - longueurEcran / 4) / (5.5 * Math
 					.sqrt(3)));
 			if (choix) {
-				tailleTortueChoix = longueurEcran / 4;
-				xChoixRouge = (float) (longueurEcran / 0.73);
-				yChoixRouge = (float) (largeurEcran / 3);
-				xChoixVerte = (float) (longueurEcran / 0.99);
-				yChoixVerte = (float) (largeurEcran / 3);
-
-				drawImage(textechoix, (float) (largeurEcran / 1.8),
-						(float) (largeurEcran / 8), tailleTortueChoix * 3,
-						tailleTortueChoix * 3 / 4);
-				drawImage(trouge, xChoixRouge, yChoixRouge, tailleTortueChoix,
-						tailleTortueChoix);
-				drawImage(choixvertdroite, xChoixVerte, yChoixVerte,
-						tailleTortueChoix, tailleTortueChoix);
-				xO = (largeurEcran / 3.5 - (11 * l) / 2.);
-				yO = (longueurEcran / 2 - (7 * l * Math.sqrt(3)) / 2.);
+				choixTortueLandscape();
 			}
 		}
 
@@ -334,6 +325,84 @@ public class Plateau extends View {
 			yO = (longueurEcran / 2. - (7 * l * Math.sqrt(3)) / 2.);
 		}
 
+		dessinerPlateauTortue();
+		dessinerTortuePossibles();
+
+		for (Byte b : tcercle) {
+			int L3 = 2 * l + 2;
+			drawImage(cercle, tPoint[b].x - (L3 * 7 / 8) / 2,
+					(int) (tPoint[b].y - ((L3 * 7 / 8)) / 2), L3 * 7 / 8,
+					(int) ((L3 * 7 / 8)));
+		}
+
+		// --------------------------------------------------------------------------//
+
+		if (conf.isEclo() && (conf.player == 1 || multi)) {
+			affOeuf = true;
+			/*
+			 * g.drawImage(oeuf, 10, 10, 60, 80, null); g.setColor(Color.BLACK);
+			 * g.drawString( "oeuf restant : " + conf.oeufsDispoEclo() + "(" +
+			 * conf.getStockPlayerEclo() + ")", 10, 80 + 10 + 10);
+			 */
+		} else {
+			affOeuf = false;
+		}
+		if (oeufT && (conf.player == 1 || multi)) {
+			affTerminee = true;
+			/*
+			 * g.setColor(new Color(150, 150, 150)); g.fill3DRect(10, 80 + 10 +
+			 * 10 + 10, 100, 20, true); g.setColor(Color.BLACK);
+			 * g.drawString("Terminer le tour", 10 + 5, 80 + 10 + 10 + 10 + 10 +
+			 * 5);
+			 */
+		} else {
+			affTerminee = false;
+		}
+		
+		if (win == true) {
+			afficherVainqueur();
+		}
+
+	}
+
+	private void dessinerTexte(int couleur, int taille, int texte, int x, int y) {
+		// TODO Auto-generated method stub
+		Paint paint = new Paint();
+		String fontPath = "fonts/comic.ttf";
+		Typeface tf = Typeface.createFromAsset(context.getAssets(), fontPath);
+		paint.setTypeface(tf);
+		paint.setColor(couleur);
+		paint.setTextSize(taille);
+		canvas.drawText(context.getResources().getString(texte), x, y, paint);
+	}
+
+	private void dessinerTortuePossibles() {
+		// TODO Auto-generated method stub
+		for (byte[] trt : transTortue) {
+
+			int noTortue = trt[0];
+			int type = confTab[trt[1]];
+			int L2 = 2 * l + 2;
+
+			if (type == 1) {
+				drawImage(
+						trougetr,
+						tPoint[noTortue].x - (L2 * 2 / 3) / 2,
+						(int) (tPoint[noTortue].y - ((L2 * 2 / 3) * 0.905) / 2),
+						L2 * 2 / 3, (int) ((L2 * 2 / 3) * 0.905));
+			} else if (type == 2) {
+				drawImage(
+						tverttr,
+						tPoint[noTortue].x - (L2 * 2 / 3) / 2,
+						(int) (tPoint[noTortue].y - ((L2 * 2 / 3) * 0.905) / 2),
+						L2 * 2 / 3, (int) ((L2 * 2 / 3) * 0.905));
+			}
+
+		}
+	}
+
+	private void dessinerPlateauTortue() {
+		// TODO Auto-generated method stub
 		confTab = conf.convertTabPlateauEn37();
 		int L = 2 * l + 2;
 		int H = (int) (l * Math.sqrt(3) + 2);
@@ -395,59 +464,79 @@ public class Plateau extends View {
 				k--;
 			}
 		}
+	}
 
-		for (byte[] trt : transTortue) {
+	private void choixTortueLandscape() {
+		// TODO Auto-generated method stub
+		tailleTortueChoix = (int) (longueurEcran / 3);
+		xChoixRouge = (float) (longueurEcran / 0.99);
+		yChoixRouge = (float) (largeurEcran / 3);
+		xChoixVerte = (float) (longueurEcran / 0.73);
+		yChoixVerte = (float) (largeurEcran / 3);
 
-			int noTortue = trt[0];
-			int type = confTab[trt[1]];
-			int L2 = 2 * l + 2;
+		dessinerTexte(Color.WHITE, 65, R.string.choixTortue,
+				(int) (largeurEcran / 1.8), (int) (longueurEcran / 3));
+		drawImage(trouge, xChoixRouge, yChoixRouge, tailleTortueChoix,
+				tailleTortueChoix);
+		drawImage(choixvertdroite, xChoixVerte, yChoixVerte, tailleTortueChoix,
+				tailleTortueChoix);
+		xO = (largeurEcran / 3.5 - (11 * l) / 2.);
+		yO = (longueurEcran / 2 - (7 * l * Math.sqrt(3)) / 2.);
+	}
 
-			if (type == 1) {
-				drawImage(
-						trougetr,
-						tPoint[noTortue].x - (L2 * 2 / 3) / 2,
-						(int) (tPoint[noTortue].y - ((L2 * 2 / 3) * 0.905) / 2),
-						L2 * 2 / 3, (int) ((L2 * 2 / 3) * 0.905));
-			} else if (type == 2) {
-				drawImage(
-						tverttr,
-						tPoint[noTortue].x - (L2 * 2 / 3) / 2,
-						(int) (tPoint[noTortue].y - ((L2 * 2 / 3) * 0.905) / 2),
-						L2 * 2 / 3, (int) ((L2 * 2 / 3) * 0.905));
+	private void choixTortuePortrait() {
+		// TODO Auto-generated method stub
+		tailleTortueChoix = longueurEcran / 6;
+		xChoixRouge = largeurEcran / 6;
+		yChoixRouge = longueurEcran / 6;
+		xChoixVerte = (float) (largeurEcran / 1.2) - tailleTortueChoix;
+		yChoixVerte = longueurEcran / 6;
+
+		dessinerTexte(Color.WHITE, 70, R.string.choixTortue,
+				(int) (largeurEcran / 10), (int) (longueurEcran / 8));
+		drawImage(choixrouge, xChoixRouge, yChoixRouge, tailleTortueChoix,
+				tailleTortueChoix);
+		drawImage(choixvert, xChoixVerte, yChoixVerte, tailleTortueChoix,
+				tailleTortueChoix);
+		xO = (largeurEcran / 2 - (11 * l) / 2.);
+		yO = (longueurEcran / 1.5 - (7 * l * Math.sqrt(3)) / 2.);
+	}
+
+	private void afficherVainqueur() {
+		// TODO Auto-generated method stub
+		int orientationEcran = this.getResources().getConfiguration().orientation;
+
+		if (conf.whoWin() == 1) {
+			if (orientationEcran == android.content.res.Configuration.ORIENTATION_PORTRAIT) {
+				dessinerTexte(Color.RED, 70, R.string.victoireRouge,
+						largeurEcran/13,
+						(int) (longueurEcran / 1.1));
+				drawImage(winRouge, 0, 0, largeurEcran,
+						(int) (longueurEcran / 1.5));
+			} else {
+				dessinerTexte(Color.RED, 70, R.string.victoireRouge,
+						largeurEcran/16,
+						(int) (longueurEcran / 2));
+				drawImage(winRouge, (int) (largeurEcran / 1.8), 0,
+						largeurEcran / 2, (int) (longueurEcran));
 			}
-
 		}
-
-		// --------------------------------------------------------------------------//
-
-		for (Byte b : tcercle) {
-			int L3 = 2 * l + 2;
-			drawImage(cercle, tPoint[b].x - (L3 * 7 / 8) / 2,
-					(int) (tPoint[b].y - ((L3 * 7 / 8)) / 2), L3 * 7 / 8,
-					(int) ((L3 * 7 / 8)));
+		if (conf.whoWin() == 2) {
+			if (orientationEcran == android.content.res.Configuration.ORIENTATION_PORTRAIT) {
+				dessinerTexte(Color.GREEN, 70, R.string.victoireVert,
+						largeurEcran/13,
+						(int) (longueurEcran / 1.1));
+				drawImage(winVert, 0, 0, largeurEcran,
+						(int) (longueurEcran / 1.5));
+			} else {
+				dessinerTexte(Color.GREEN, 70, R.string.victoireVert,
+						largeurEcran/16,
+						(int) (longueurEcran / 2));
+				drawImage(winVert, (int) (largeurEcran / 1.8), 0,
+						largeurEcran / 2, (int) (longueurEcran));
+			}
 		}
-
-		if (conf.isEclo() && (conf.player == 1 || multi)) {
-			affOeuf = true;
-			/*
-			 * g.drawImage(oeuf, 10, 10, 60, 80, null); g.setColor(Color.BLACK);
-			 * g.drawString( "oeuf restant : " + conf.oeufsDispoEclo() + "(" +
-			 * conf.getStockPlayerEclo() + ")", 10, 80 + 10 + 10);
-			 */
-		} else {
-			affOeuf = false;
-		}
-		if (oeufT && (conf.player == 1 || multi)) {
-			affTerminee = true;
-			/*
-			 * g.setColor(new Color(150, 150, 150)); g.fill3DRect(10, 80 + 10 +
-			 * 10 + 10, 100, 20, true); g.setColor(Color.BLACK);
-			 * g.drawString("Terminer le tour", 10 + 5, 80 + 10 + 10 + 10 + 10 +
-			 * 5);
-			 */
-		} else {
-			affTerminee = false;
-		}
+		reset();
 	}
 
 	/**
@@ -566,42 +655,71 @@ public class Plateau extends View {
 	 * remet le plateau a z�ro
 	 */
 	private void reset() {
-		conf = new Configuration(variante);
-		win = false;
-		invalidate();
-		affPossibleMove();
+		AlertDialog alertDialog;
+		alertDialog = new AlertDialog.Builder(context).create();
+		alertDialog.setTitle("Partie finie");
+
+		alertDialog.setMessage("Voulez vous rejouer ?");
+
+		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Oui",
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						if (conf.whoWin() == 1) { // Si les rouges gagnent
+							conf = new Configuration(variante);
+							conf.changePlayer();
+						} else {
+							conf = new Configuration(variante);
+						}
+						win = false;
+						invalidate();
+						affPossibleMove();
+					}
+				});
+		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Non",
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						plateau.finish();
+					}
+				});
+		alertDialog.show();
 	}
 
 	/**
 	 * affiche un dialogue et remet le plateau a z�ro si quelqu'un gagne
 	 */
-	private void verifWin() {
-
+	private void verifWin() 
+	{
 		if ((conf.whoWin() == 1) || (conf.whoWin() == 2)) {
-			AlertDialog alertDialog;
-			alertDialog = new AlertDialog.Builder(context).create();
-			alertDialog.setTitle("Partie finie");
+			/*
+			 * AlertDialog alertDialog; alertDialog = new
+			 * AlertDialog.Builder(context).create();
+			 * alertDialog.setTitle("Partie finie");
+			 */
+
+			int orientationEcran = this.getResources().getConfiguration().orientation;
 
 			if (conf.whoWin() == 1) {
 				win = true;
-				alertDialog.setMessage("Les tortues Rouges gagnent !");
+				invalidate();
+				// alertDialog.setMessage("Les tortues Rouges gagnent !");
 				System.out.println("Les tortues Rouges gagnent");
 			}
 			if (conf.whoWin() == 2) {
 				win = true;
-				alertDialog.setMessage("Les tortues Vertes gagnent !");
+				invalidate();
+				// alertDialog.setMessage("Les tortues Vertes gagnent !");
 				System.out.println("Les tortues Vertes gagnent");
 			}
 
-			alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, "Ok",
-					new DialogInterface.OnClickListener() {
-
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							reset();
-						}
-					});
-			alertDialog.show();
+			/*
+			 * alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, "Ok", new
+			 * DialogInterface.OnClickListener() {
+			 * 
+			 * @Override public void onClick(DialogInterface dialog, int which)
+			 * { reset(); } }); alertDialog.show();
+			 */
 		}
 	}
 
@@ -614,6 +732,7 @@ public class Plateau extends View {
 	 *            ordonn� du clique
 	 * @return si l'utilisateur a cliqu� sur l'oeuf
 	 */
+	@SuppressWarnings("unused")
 	private boolean isOeufClick(int x, int y) {
 		return new Rect(10, 10, 60, 80).contains(x, y);
 	}
@@ -628,7 +747,7 @@ public class Plateau extends View {
 	 * @return si l'utilisateur a cliqu� sur le bouton termin�
 	 */
 
-	private void isChoixClick(int x, int y) {
+	private byte isChoixClick(int x, int y) {
 		Rect recTortueRouge = new Rect((int) (xChoixRouge),
 				(int) (yChoixRouge), (int) (xChoixRouge) + tailleTortueChoix,
 				(int) (yChoixRouge) + tailleTortueChoix);
@@ -640,12 +759,15 @@ public class Plateau extends View {
 			choixTortue = 1;
 			choix = false;
 			invalidate();
+			return choixTortue;
 		}
 		if (recTortueVerte.contains(x, y)) {
 			choixTortue = 2;
 			choix = false;
 			invalidate();
+			return choixTortue;
 		}
+		return choixTortue;
 	}
 
 	public boolean isTerminerClick(int x, int y) {
@@ -654,209 +776,181 @@ public class Plateau extends View {
 
 	public class Swingworker extends AsyncTask<Void, Void, Void> {
 
+		/*protected void onPreExecute() {
+			//bar = (ProgressBar) findViewById(R.id.progressBar1);
+			//bar.setVisibility(View.VISIBLE);
+		}*/
+
 		@Override
 		protected Void doInBackground(Void... arg0) {
 			try {
 				// changer d'IA
 				conf = IA.meilleurConf(conf, (byte) difficulte);
+
 			} catch (CaseNonLibreException e) {
 				e.printStackTrace();
 			}
 			affPossibleMove();
 			postInvalidate();
-			verifWin();
 			threadD = false;
 			return null;
+		}
+
+		protected void onPostExecute(Void unused) {
+			//bar.setVisibility(View.GONE);
+			verifWin();
 		}
 
 	}
 
 	public boolean onTouchEvent(MotionEvent evt) {
 
-		if (choix == true) {
+		a = false;
+
+		if (choix) {
 			if (evt.getAction() == MotionEvent.ACTION_DOWN) {
 				int x = (int) evt.getX();
 				int y = (int) evt.getY();
-				isChoixClick(x, y);
-
+				choixTortue = isChoixClick(x, y); // Attend l'appui sur l'une
+													// des deux tortues
 				if (choixTortue != 0) {
+					choix = false; // si le choix a été fait, on remet à zéro
+					/* Choix de la tortue */
 					conf.coupJoue(Configuration.en81(clTor1), choixTortue,
 							Configuration.en81(clTor2));
-
-					choixTortue = 0; // remise a niveau
-					choix = false;
+					choixTortue = 0;
 					tcercle.clear();
 					if (saute == -1)
 						saute = 3;
 					clTor1 = clTor2;
 					clTor2 = -1;
+					a = false;
+					/* ----- */
 
-					transTortue.clear();
-					clTor1 = -1;
-					clTor2 = -1;
-					conf.changePlayer();
+					// Reprise du code
+					suiteAction();
+					appelThreadIa();
+				}
+			}
+
+		}
+
+		if (evt.getAction() == MotionEvent.ACTION_DOWN) {
+			tcercle.clear();
+			invalidate();
+			if ((conf.player != 2 || multi) && !oeufT || oeufC) {
+				affPossibleMove();
+			}
+			byte numTor = tortueClique((int) evt.getX(), (int) evt.getY());
+			if ((numTor != -1 && !oeufT && !oeufC) && cliquePossible(numTor)) {
+				if (clTor1 == -1 && confTab[numTor] == conf.getPlayer()) {
+					clTor1 = numTor;
 					tcercle.clear();
-					if (multi) {
-						affPossibleMove();
+					tcercle.add(numTor);
+					for (byte[] poss : conf.verifCoupObligatoire()) {
+						if (Configuration.en37(poss[0]) == numTor) {
+							transTortue.add(new byte[] {
+									Configuration.en37(poss[2]),
+									Configuration.en37(poss[0]), poss[1] });
+						}
 					}
-					saute = -1;
-					verifWin();
+					if (transTortue.isEmpty()) {
+						for (byte[] poss : conf.possibleMove(
+								Configuration.en81(numTor), (byte) 0)) {
+							transTortue.add(new byte[] {
+									Configuration.en37(poss[2]),
+									Configuration.en37(poss[0]), poss[1] });
+						}
+					}
 					invalidate();
-
-					if (!multi && conf.getPlayer() == 2 && !win && !threadD) {
-						// conf.printHexRV();
-						threadD = true;
-						Swingworker sw = new Swingworker();
-						sw.execute();
-					}
-				}
-
-			}
-		} else {
-			// playSound(R.raw.son);
-			if (evt.getAction() == MotionEvent.ACTION_DOWN) {
-				int x = (int) evt.getX();
-				int y = (int) evt.getY();
-				boolean terminee = affTerminee && isTerminerClick(x, y);
-				if (oeufC) {
-					if (conf.oeufsDispoEclo() > 0) {
-						try {
-							byte clic = tortueClique((int) evt.getX(),
-									(int) evt.getY());
-							if (tcercle.contains(clic)) {
-								conf.coupEclo(Configuration.en81(clic));
-							}
-							invalidate();
-						} catch (CaseNonLibreException e) {
-							System.err.println(e.getMessage());
-						}
-					}
-				}
-				oeufC = affOeuf
-						&& isOeufClick((int) evt.getX(), (int) evt.getY())
-						&& !oeufC && conf.oeufsDispoEclo() > 0;
-
-				if (oeufC) {
-					oeufT = true;
-				}
-
-				if ((conf.oeufsDispoEclo() == 0 && conf.getStockPlayerEclo() != 0)
-						|| terminee) {
-					conf.changePlayer();
-					terminee = false;
-					oeufT = false;
-					oeufC = false;
-					invalidate();
-				}
-				tcercle.clear();
-				invalidate();
-				if ((conf.player != 2 || multi) && !oeufT || oeufC) {
-					affPossibleMove();
-				}
-				byte numTor = tortueClique((int) evt.getX(), (int) evt.getY());
-				if ((numTor != -1 && !oeufT && !oeufC)
-						&& cliquePossible(numTor)) {
-					if (clTor1 == -1 && confTab[numTor] == conf.getPlayer()) {
-						clTor1 = numTor;
-						tcercle.clear();
-						tcercle.add(numTor);
-						for (byte[] poss : conf.verifCoupObligatoire()) {
-							if (Configuration.en37(poss[0]) == numTor) {
-								transTortue.add(new byte[] {
-										Configuration.en37(poss[2]),
-										Configuration.en37(poss[0]), poss[1] });
-							}
-						}
-						if (transTortue.isEmpty()) {
-							for (byte[] poss : conf.possibleMove(
-									Configuration.en81(numTor), (byte) 0)) {
-								transTortue.add(new byte[] {
-										Configuration.en37(poss[2]),
-										Configuration.en37(poss[0]), poss[1] });
-							}
-						}
-						invalidate();
-					} else if (clTor1 != -1) {
-						if (clTor2 == -1) {
-							clTor2 = numTor;
-							confTab[clTor2] = confTab[clTor1];
-							confTab[clTor1] = 0;
-							boolean a = false;
-							for (byte[] coup : transTortue) {
-								if (clTor1 == coup[1] && clTor2 == coup[0]) {
-									if (coup[2] == 3) { // Si l'on doit
-														// retourner une tortue
+				} else if (clTor1 != -1) {
+					if (clTor2 == -1) {
+						clTor2 = numTor;
+						confTab[clTor2] = confTab[clTor1];
+						confTab[clTor1] = 0;
+						for (byte[] coup : transTortue) {
+							if (clTor1 == coup[1] && clTor2 == coup[0]) {
+								if (coup[2] == 3) { // Si l'on doit
+													// retourner une tortue
+									if (choixTortue == 0) {
 										choix = true;
-										a = true;
-
-									} else if (coup[2] != 0) {
-										conf.coupJoue(
-												Configuration.en81(clTor1),
-												coup[2],
-												Configuration.en81(clTor2));
-										tcercle.clear();
-										saute = coup[2];
-										clTor1 = clTor2;
-										clTor2 = -1;
-										a = true;
-									} else {
-										conf.coupJoue(
-												Configuration.en81(clTor1),
-												(byte) 0,
-												Configuration.en81(clTor2));
-										saute = 0;
-										a = true;
+										invalidate();
+										return false;
 									}
-								}
-							}
-							transTortue.clear();
 
-							if (saute > 0) {
-								for (byte[] poss : conf.possibleMove(
-										Configuration.en81(clTor1), saute)) {
-									transTortue.add(new byte[] {
-											Configuration.en37(poss[2]),
-											Configuration.en37(poss[0]),
-											poss[1] });
-								}
-								if (transTortue.isEmpty()) {
-									saute = -1;
-									clTor1 = -1;
+								} else if (coup[2] != 0) {
+									conf.coupJoue(Configuration.en81(clTor1),
+											coup[2], Configuration.en81(clTor2));
+									tcercle.clear();
+									saute = coup[2];
+									clTor1 = clTor2;
 									clTor2 = -1;
-									conf.changePlayer();
-									affPossibleMove();
+									a = true;
+								} else {
+									conf.coupJoue(Configuration.en81(clTor1),
+											(byte) 0,
+											Configuration.en81(clTor2));
+									saute = 0;
+									a = true;
 								}
-							} else if (!a) {
-								clTor1 = -1;
-								clTor2 = -1;
-								affPossibleMove();
-							} else {
-								clTor1 = -1;
-								clTor2 = -1;
-								conf.changePlayer();
-								tcercle.clear();
-								if (multi) {
-									affPossibleMove();
-								}
-								saute = -1;
-
 							}
-							verifWin();
-							invalidate();
 						}
+						suiteAction();
 					}
 
 				}
-				if (!multi && conf.getPlayer() == 2 && !win && !threadD) {
-					// conf.printHexRV();
-					threadD = true;
-					Swingworker sw = new Swingworker();
-					sw.execute();
 
-				}
 			}
+			appelThreadIa();
 		}
 		return true;
+
+	}
+
+	private void appelThreadIa() {
+		// TODO Auto-generated method stub
+		if (!multi && conf.getPlayer() == 2 && !win && !threadD) {
+			// conf.printHexRV();
+			threadD = true;
+			Swingworker sw = new Swingworker();
+			sw.execute();
+		}
+	}
+
+	private void suiteAction() {
+		// TODO Auto-generated method stub
+		transTortue.clear();
+
+		if (saute > 0) {
+			for (byte[] poss : conf.possibleMove(Configuration.en81(clTor1),
+					saute)) {
+				transTortue.add(new byte[] { Configuration.en37(poss[2]),
+						Configuration.en37(poss[0]), poss[1] });
+			}
+			if (transTortue.isEmpty()) {
+				saute = -1;
+				clTor1 = -1;
+				clTor2 = -1;
+				conf.changePlayer();
+				affPossibleMove();
+			}
+		} else if (!a) {
+			clTor1 = -1;
+			clTor2 = -1;
+			affPossibleMove();
+		} else {
+			clTor1 = -1;
+			clTor2 = -1;
+			conf.changePlayer();
+			tcercle.clear();
+			if (multi) {
+				affPossibleMove();
+			}
+			saute = -1;
+
+		}
+		verifWin();
+		invalidate();
 	}
 
 	@SuppressWarnings("unused")
