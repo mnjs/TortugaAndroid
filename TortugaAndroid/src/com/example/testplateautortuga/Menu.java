@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -49,6 +51,9 @@ public class Menu extends Activity {
 
 		un_joueur.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
+			Animation animButton = AnimationUtils.loadAnimation(arg0.getContext(), R.anim.anim_button);
+			arg0.startAnimation(animButton);
+			
 				if (isClickedIA == true) {
 					un_joueur.setTextColor(Color.WHITE);
 					label_difficulte.setVisibility(View.INVISIBLE);
@@ -66,7 +71,11 @@ public class Menu extends Activity {
 		});
 
 		deux_joueurs.setOnClickListener(new OnClickListener() {
+			
 			public void onClick(View arg0) {
+				Animation animButton = AnimationUtils.loadAnimation(arg0.getContext(), R.anim.anim_button);
+				arg0.startAnimation(animButton);
+				
 				if (isClickedPVP == true) {
 					deux_joueurs.setTextColor(Color.WHITE);
 					isClickedPVP = false;
@@ -97,6 +106,9 @@ public class Menu extends Activity {
 
 		jouer.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
+				Animation animButton = AnimationUtils.loadAnimation(arg0.getContext(), R.anim.anim_button);
+				arg0.startAnimation(animButton);
+				
 				if (isClickedIA == false && isClickedPVP == false) {
 					msg_mode.setButton("OK",
 							new DialogInterface.OnClickListener() {
