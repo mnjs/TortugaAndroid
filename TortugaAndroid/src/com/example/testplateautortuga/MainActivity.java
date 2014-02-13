@@ -7,6 +7,8 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -32,6 +34,9 @@ public class MainActivity extends Activity {
 
 		jouer.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
+				Animation animButton = AnimationUtils.loadAnimation(arg0.getContext(), R.anim.anim_button);
+				arg0.startAnimation(animButton);
+				
 				Intent i = new Intent(MainActivity.this, Menu.class);
 				startActivity(i);
 			}
@@ -40,6 +45,9 @@ public class MainActivity extends Activity {
 		);
 		regles.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
+				Animation animButton = AnimationUtils.loadAnimation(arg0.getContext(), R.anim.anim_button);
+				arg0.startAnimation(animButton);
+				
 				Intent i = new Intent(MainActivity.this, Regles.class);
 				startActivity(i);
 			}
