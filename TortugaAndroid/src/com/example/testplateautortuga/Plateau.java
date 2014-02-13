@@ -361,6 +361,7 @@ public class Plateau extends View {
 
 		if (win == true) {
 			afficherVainqueur();
+			rejouer = true;
 		}
 
 	}
@@ -474,7 +475,7 @@ public class Plateau extends View {
 		xChoixVerte = (float) (longueurEcran / 0.73);
 		yChoixVerte = (float) (largeurEcran / 3);
 
-		dessinerTexte(Color.WHITE, 65, R.string.choixTortue,
+		dessinerTexte(Color.WHITE, largeurEcran/20, R.string.choixTortue,
 				(int) (largeurEcran / 1.8), (int) (longueurEcran / 3));
 		drawImage(trouge, xChoixRouge, yChoixRouge, tailleTortueChoix,
 				tailleTortueChoix);
@@ -492,7 +493,7 @@ public class Plateau extends View {
 		xChoixVerte = (float) (largeurEcran / 1.2) - tailleTortueChoix;
 		yChoixVerte = longueurEcran / 6;
 
-		dessinerTexte(Color.WHITE, 70, R.string.choixTortue,
+		dessinerTexte(Color.WHITE, largeurEcran/10, R.string.choixTortue,
 				(int) (largeurEcran / 10), (int) (longueurEcran / 8));
 		drawImage(choixrouge, xChoixRouge, yChoixRouge, tailleTortueChoix,
 				tailleTortueChoix);
@@ -508,12 +509,12 @@ public class Plateau extends View {
 
 		if (conf.whoWin() == 1) {
 			if (orientationEcran == android.content.res.Configuration.ORIENTATION_PORTRAIT) {
-				dessinerTexte(Color.RED, 70, R.string.victoireRouge,
+				dessinerTexte(Color.RED, largeurEcran/10, R.string.victoireRouge,
 						largeurEcran / 13, (int) (longueurEcran / 1.1));
 				drawImage(winRouge, 0, 0, largeurEcran,
 						(int) (longueurEcran / 1.5));
 			} else {
-				dessinerTexte(Color.RED, 70, R.string.victoireRouge,
+				dessinerTexte(Color.RED, largeurEcran/20, R.string.victoireRouge,
 						largeurEcran / 16, (int) (longueurEcran / 2));
 				drawImage(winRouge, (int) (largeurEcran / 1.8), 0,
 						largeurEcran / 2, (int) (longueurEcran));
@@ -521,18 +522,17 @@ public class Plateau extends View {
 		}
 		if (conf.whoWin() == 2) {
 			if (orientationEcran == android.content.res.Configuration.ORIENTATION_PORTRAIT) {
-				dessinerTexte(Color.GREEN, 70, R.string.victoireVert,
+				dessinerTexte(Color.GREEN, largeurEcran/10, R.string.victoireVert,
 						largeurEcran / 13, (int) (longueurEcran / 1.1));
 				drawImage(winVert, 0, 0, largeurEcran,
 						(int) (longueurEcran / 1.5));
 			} else {
-				dessinerTexte(Color.GREEN, 70, R.string.victoireVert,
+				dessinerTexte(Color.GREEN, largeurEcran/20, R.string.victoireVert,
 						largeurEcran / 16, (int) (longueurEcran / 2));
 				drawImage(winVert, (int) (largeurEcran / 1.8), 0,
 						largeurEcran / 2, (int) (longueurEcran));
 			}
 		}
-		rejouer = true;
 	}
 
 	/**
@@ -651,13 +651,13 @@ public class Plateau extends View {
 	 * remet le plateau a z�ro
 	 */
 	private void reset() {
-		AlertDialog alertDialog;
+		final AlertDialog alertDialog;
 		alertDialog = new AlertDialog.Builder(context).create();
-		alertDialog.setTitle("Partie finie");
+		alertDialog.setTitle(context.getResources().getString(R.string.reset));
 
-		alertDialog.setMessage("Voulez vous rejouer ?");
+		alertDialog.setMessage(context.getResources().getString(R.string.rejouer));
 
-		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Oui",
+		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.oui),
 				new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
@@ -668,12 +668,12 @@ public class Plateau extends View {
 							conf = new Configuration(variante);
 						}
 						win = false;
-						rejouer = false;
 						invalidate();
+						rejouer = false;
 						affPossibleMove();
 					}
 				});
-		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Non",
+		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, context.getResources().getString(R.string.non),
 				new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
@@ -689,11 +689,6 @@ public class Plateau extends View {
 
 	private void verifWin() {
 		if ((conf.whoWin() == 1) || (conf.whoWin() == 2)) {
-			/*
-			 * AlertDialog alertDialog; alertDialog = new
-			 * AlertDialog.Builder(context).create();
-			 * alertDialog.setTitle("Partie finie");
-			 */
 
 			int orientationEcran = this.getResources().getConfiguration().orientation;
 
@@ -709,14 +704,6 @@ public class Plateau extends View {
 				// alertDialog.setMessage("Les tortues Vertes gagnent !");
 				System.out.println("Les tortues Vertes gagnent");
 			}
-
-			/*
-			 * alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, "Ok", new
-			 * DialogInterface.OnClickListener() {
-			 * 
-			 * @Override public void onClick(DialogInterface dialog, int which)
-			 * { reset(); } }); alertDialog.show();
-			 */
 		}
 	}
 
@@ -809,11 +796,11 @@ public class Plateau extends View {
 
 	public boolean onTouchEvent(MotionEvent evt) {
 
-		if(rejouer){
+		if (evt.getAction() == MotionEvent.ACTION_DOWN && rejouer) {
 			reset();
 			rejouer = false;
 		}
-		
+
 		a = false;
 
 		if (choix) {
@@ -903,8 +890,8 @@ public class Plateau extends View {
 									a = true;
 								}
 							}
-						}
-						suiteAction();
+						}suiteAction();
+						
 					}
 
 				}
@@ -934,6 +921,7 @@ public class Plateau extends View {
 					saute)) {
 				transTortue.add(new byte[] { Configuration.en37(poss[2]),
 						Configuration.en37(poss[0]), poss[1] });
+				tcercle.clear();
 			}
 			if (transTortue.isEmpty()) {
 				saute = -1;
@@ -958,7 +946,6 @@ public class Plateau extends View {
 
 		}
 		verifWin();
-		//invalidate();
 	}
 
 	@SuppressWarnings("unused")

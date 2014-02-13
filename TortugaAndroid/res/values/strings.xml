@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">TestPlateauTortuga</string>
+    <string name="app_name">Tortuga</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="todo">TODO</string>
@@ -15,5 +15,9 @@
     <string name="choixTortue">Turtle choice</string>
     <string name="victoireVert">Green victory !</string>
     <string name="victoireRouge">Red victory !</string>
+    <string name="reset">Game over</string>
+    <string name="oui">Yes</string>
+    <string name="non">No</string>
+    <string name="rejouer">Play again ?</string>
 
 </resources>

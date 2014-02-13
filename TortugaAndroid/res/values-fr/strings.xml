@@ -15,5 +15,9 @@
     <string name="choixTortue">Choix de la tortue</string>
     <string name="victoireVert">Victoire des verts</string>
     <string name="victoireRouge">Victoire des rouges</string>
+    <string name="reset">Partie finie</string>
+    <string name="oui">Oui</string>
+    <string name="non">Non</string>
+    <string name="rejouer">Voulez-vous rejouer ?</string>
 
 </resources>

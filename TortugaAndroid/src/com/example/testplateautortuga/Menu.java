@@ -1,10 +1,19 @@
 package com.example.testplateautortuga;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.RatingBar;
+import android.widget.TextView;
 
 public class Menu extends Activity {
 
@@ -17,14 +26,14 @@ public class Menu extends Activity {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.menu);
-
+		/*
 		Intent intent = new Intent(Menu.this,
 				PlateauWindows.class);
 		intent.putExtra("mode", false);
 		intent.putExtra("eclosion", false);
 		intent.putExtra("difficulte",1);
 		startActivity(intent);
-		/*
+		*/
 		String fontPath = "fonts/font.TTF";
 		final Button un_joueur = (Button) findViewById(R.id.button1);
 		final Button deux_joueurs = (Button) findViewById(R.id.button2);
@@ -133,7 +142,7 @@ public class Menu extends Activity {
 				}
 
 			}
-		});*/
+		});
 
 	}
 }
