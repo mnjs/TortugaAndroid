@@ -17,13 +17,9 @@ package com.example.testplateautortuga;
 import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Application;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 //import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -36,13 +32,9 @@ import android.graphics.Typeface;
 import android.media.MediaPlayer;
 //import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.os.Looper;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 
 //import android.widget.LinearLayout;
 
@@ -826,7 +818,7 @@ public class Plateau extends View {
 				choixTortue = isChoixClick(x, y); // Attend l'appui sur l'une
 													// des deux tortues
 				if (choixTortue != 0) {
-					choix = false; // si le choix a été fait, on remet à zéro
+					choix = false; // si le choix a ï¿½tï¿½ fait, on remet ï¿½ zï¿½ro
 					/* Choix de la tortue */
 					conf.coupJoue(Configuration.en81(clTor1), choixTortue,
 							Configuration.en81(clTor2));
