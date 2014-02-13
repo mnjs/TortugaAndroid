@@ -17,13 +17,9 @@ package com.example.testplateautortuga;
 import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Application;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 //import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -36,13 +32,9 @@ import android.graphics.Typeface;
 import android.media.MediaPlayer;
 //import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.os.Looper;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 
 //import android.widget.LinearLayout;
 
@@ -138,6 +130,7 @@ public class Plateau extends View {
 	private int tailleTortueChoix;
 
 	private boolean a = false;
+	private boolean rejouer = false;
 	private ProgressBar bar;
 
 	private MediaPlayer mPlayer = null;
@@ -539,13 +532,7 @@ public class Plateau extends View {
 						largeurEcran / 2, (int) (longueurEcran));
 			}
 		}
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		reset();
+		rejouer = true;
 	}
 
 	/**
@@ -681,6 +668,7 @@ public class Plateau extends View {
 							conf = new Configuration(variante);
 						}
 						win = false;
+						rejouer = false;
 						invalidate();
 						affPossibleMove();
 					}
@@ -821,6 +809,11 @@ public class Plateau extends View {
 
 	public boolean onTouchEvent(MotionEvent evt) {
 
+		if(rejouer){
+			reset();
+			rejouer = false;
+		}
+		
 		a = false;
 
 		if (choix) {
@@ -965,7 +958,7 @@ public class Plateau extends View {
 
 		}
 		verifWin();
-		invalidate();
+		//invalidate();
 	}
 
 	@SuppressWarnings("unused")
