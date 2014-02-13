@@ -227,9 +227,7 @@ public class Plateau extends View {
 	 * @param multi
 	 *            {@link Plateau#MULTI_IA} ou {@link Plateau#MULTI_DEUX_JOUEURS}
 	 *            </p>
-	 *            <<<<<<< HEAD
 	 * @param bar2
-	 *            ======= >>>>>>> e35e017675896b37bf1a259c90ce3bf0a3273dc3
 	 * @param plateauWindows
 	 * @param application
 	 */
@@ -532,6 +530,12 @@ public class Plateau extends View {
 				drawImage(winVert, (int) (largeurEcran / 1.8), 0,
 						largeurEcran / 2, (int) (longueurEcran));
 			}
+		}
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		reset();
 	}
