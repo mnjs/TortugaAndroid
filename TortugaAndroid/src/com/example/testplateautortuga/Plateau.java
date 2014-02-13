@@ -20,6 +20,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -37,9 +38,11 @@ import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Looper;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 //import android.widget.LinearLayout;
 
@@ -194,7 +197,8 @@ public class Plateau extends View {
 	 */
 	private boolean oeufT;
 	/**
-	 * indique si le joueur a cliquï¿½ sur l'oeuf mais n'a pas encore posï¿½ l'oeuf
+	 * indique si le joueur a cliquï¿½ sur l'oeuf mais n'a pas encore posï¿½
+	 * l'oeuf
 	 */
 	private boolean oeufC = false;
 	/**
@@ -231,10 +235,9 @@ public class Plateau extends View {
 	 * @param multi
 	 *            {@link Plateau#MULTI_IA} ou {@link Plateau#MULTI_DEUX_JOUEURS}
 	 *            </p>
-<<<<<<< HEAD
+	 *            <<<<<<< HEAD
 	 * @param bar2
-=======
->>>>>>> e35e017675896b37bf1a259c90ce3bf0a3273dc3
+	 *            ======= >>>>>>> e35e017675896b37bf1a259c90ce3bf0a3273dc3
 	 * @param plateauWindows
 	 * @param application
 	 */
@@ -246,8 +249,6 @@ public class Plateau extends View {
 		this.multi = multi;
 		this.variante = variante;
 		this.difficulte = difficulte;
-
-		bar = new ProgressBar(context);
 
 		tPoly = new Polygon[37];
 		tPoint = new Point[37];
@@ -366,7 +367,7 @@ public class Plateau extends View {
 		} else {
 			affTerminee = false;
 		}
-		
+
 		if (win == true) {
 			afficherVainqueur();
 		}
@@ -517,14 +518,12 @@ public class Plateau extends View {
 		if (conf.whoWin() == 1) {
 			if (orientationEcran == android.content.res.Configuration.ORIENTATION_PORTRAIT) {
 				dessinerTexte(Color.RED, 70, R.string.victoireRouge,
-						largeurEcran/13,
-						(int) (longueurEcran / 1.1));
+						largeurEcran / 13, (int) (longueurEcran / 1.1));
 				drawImage(winRouge, 0, 0, largeurEcran,
 						(int) (longueurEcran / 1.5));
 			} else {
 				dessinerTexte(Color.RED, 70, R.string.victoireRouge,
-						largeurEcran/16,
-						(int) (longueurEcran / 2));
+						largeurEcran / 16, (int) (longueurEcran / 2));
 				drawImage(winRouge, (int) (largeurEcran / 1.8), 0,
 						largeurEcran / 2, (int) (longueurEcran));
 			}
@@ -532,14 +531,12 @@ public class Plateau extends View {
 		if (conf.whoWin() == 2) {
 			if (orientationEcran == android.content.res.Configuration.ORIENTATION_PORTRAIT) {
 				dessinerTexte(Color.GREEN, 70, R.string.victoireVert,
-						largeurEcran/13,
-						(int) (longueurEcran / 1.1));
+						largeurEcran / 13, (int) (longueurEcran / 1.1));
 				drawImage(winVert, 0, 0, largeurEcran,
 						(int) (longueurEcran / 1.5));
 			} else {
 				dessinerTexte(Color.GREEN, 70, R.string.victoireVert,
-						largeurEcran/16,
-						(int) (longueurEcran / 2));
+						largeurEcran / 16, (int) (longueurEcran / 2));
 				drawImage(winVert, (int) (largeurEcran / 1.8), 0,
 						largeurEcran / 2, (int) (longueurEcran));
 			}
@@ -627,8 +624,8 @@ public class Plateau extends View {
 	 *            abscisse du clique
 	 * @param y
 	 *            ordonnï¿½ du clique
-	 * @return le numï¿½ro de la case oï¿½ se situ la tortue cliquï¿½ ou -1 si il n'y
-	 *         a pas de case a cette endroit
+	 * @return le numï¿½ro de la case oï¿½ se situ la tortue cliquï¿½ ou -1 si
+	 *         il n'y a pas de case a cette endroit
 	 */
 	private byte tortueClique(int x, int y) {
 		for (byte i = 0; i < tPoly.length; i++) {
@@ -640,8 +637,8 @@ public class Plateau extends View {
 	}
 
 	/**
-	 * retourne si il est possible de cliquer sur la tortue indiquï¿½ en paramï¿½tre
-	 * tortue
+	 * retourne si il est possible de cliquer sur la tortue indiquï¿½ en
+	 * paramï¿½tre tortue
 	 * 
 	 * @param numTor
 	 *            numï¿½ro de la tortue
@@ -784,11 +781,17 @@ public class Plateau extends View {
 
 	public class Swingworker extends AsyncTask<Void, Void, Void> {
 
-		/*protected void onPreExecute() {
-			//bar = (ProgressBar) findViewById(R.id.progressBar1);
-			//bar.setVisibility(View.VISIBLE);
-		}*/
+		/*
+		 * protected void onPreExecute() { //bar = (ProgressBar)
+		 * findViewById(R.id.progressBar1); //bar.setVisibility(View.VISIBLE); }
+		 */
+		protected void onPreExecute(){
 
+			bar = new ProgressBar(context, null, android.R.attr.progressBarStyleSmall);
+			bar.setVisibility(View.VISIBLE);
+			bar.bringToFront();
+		}
+		
 		@Override
 		protected Void doInBackground(Void... arg0) {
 			try {
@@ -805,7 +808,8 @@ public class Plateau extends View {
 		}
 
 		protected void onPostExecute(Void unused) {
-			//bar.setVisibility(View.GONE);
+			// bar.setVisibility(View.GONE);
+			bar.setVisibility(View.GONE);
 			verifWin();
 		}
 
@@ -822,26 +826,25 @@ public class Plateau extends View {
 				choixTortue = isChoixClick(x, y); // Attend l'appui sur l'une
 													// des deux tortues
 				if (choixTortue != 0) {
-					choix = false; // si le choix a Ã©tÃ© fait, on remet Ã  zÃ©ro
+					choix = false; // si le choix a été fait, on remet à zéro
 					/* Choix de la tortue */
 					conf.coupJoue(Configuration.en81(clTor1), choixTortue,
 							Configuration.en81(clTor2));
 					choixTortue = 0;
 					tcercle.clear();
-
-					choixTortue = 0; // remise a niveau choix = false;
-										// tcercle.clear();
 					if (saute == -1)
 						saute = 3;
 					clTor1 = clTor2;
 					clTor2 = -1;
 					a = false;
 					/* ----- */
+
 					// Reprise du code
 					suiteAction();
 					appelThreadIa();
 				}
 			}
+
 		}
 
 		if (evt.getAction() == MotionEvent.ACTION_DOWN) {
@@ -861,87 +864,60 @@ public class Plateau extends View {
 							transTortue.add(new byte[] {
 									Configuration.en37(poss[2]),
 									Configuration.en37(poss[0]), poss[1] });
-						}				 
-						else { // playSound(R.raw.son);
-				
-							if (evt.getAction() == MotionEvent.ACTION_DOWN) {
-								int x = (int) evt.getX();
-								int y = (int) evt.getY();
-				
-								tcercle.clear();
-								invalidate();
-								if ((conf.player != 2 || multi) && !oeufT || oeufC) {
-									affPossibleMove();
+						}
+					}
+					if (transTortue.isEmpty()) {
+						for (byte[] poss : conf.possibleMove(
+								Configuration.en81(numTor), (byte) 0)) {
+							transTortue.add(new byte[] {
+									Configuration.en37(poss[2]),
+									Configuration.en37(poss[0]), poss[1] });
+						}
+					}
+					invalidate();
+				} else if (clTor1 != -1) {
+					if (clTor2 == -1) {
+						clTor2 = numTor;
+						confTab[clTor2] = confTab[clTor1];
+						confTab[clTor1] = 0;
+						for (byte[] coup : transTortue) {
+							if (clTor1 == coup[1] && clTor2 == coup[0]) {
+								if (coup[2] == 3) { // Si l'on doit
+													// retourner une tortue
+									if (choixTortue == 0) {
+										choix = true;
+										invalidate();
+										return false;
+									}
+
+								} else if (coup[2] != 0) {
+									conf.coupJoue(Configuration.en81(clTor1),
+											coup[2], Configuration.en81(clTor2));
+									tcercle.clear();
+									saute = coup[2];
+									clTor1 = clTor2;
+									clTor2 = -1;
+									a = true;
+								} else {
+									conf.coupJoue(Configuration.en81(clTor1),
+											(byte) 0,
+											Configuration.en81(clTor2));
+									saute = 0;
+									a = true;
 								}
-								byte numTor = tortueClique((int) evt.getX(), (int) evt.getY());
-								if ((numTor != -1 && !oeufT && !oeufC)
-										&& cliquePossible(numTor)) {
-									if (clTor1 == -1 && confTab[numTor] == conf.getPlayer()) {
-										clTor1 = numTor;
-										tcercle.clear();
-										tcercle.add(numTor);
-										for (byte[] poss : conf.verifCoupObligatoire()) {
-											if (Configuration.en37(poss[0]) == numTor) {
-												transTortue.add(new byte[] {
-														Configuration.en37(poss[2]),
-														Configuration.en37(poss[0]), poss[1] });
-											}
-										}
-									}
-									if (transTortue.isEmpty()) {
-										for (byte[] poss : conf.possibleMove(
-												Configuration.en81(numTor), (byte) 0)) {
-											transTortue.add(new byte[] {
-													Configuration.en37(poss[2]),
-													Configuration.en37(poss[0]), poss[1] });
-										}
-									}
-									invalidate();
-									} else if (clTor1 != -1) {
-										if (clTor2 == -1) {
-											clTor2 = numTor;
-											confTab[clTor2] = confTab[clTor1];
-											confTab[clTor1] = 0;
-											for (byte[] coup : transTortue) {
-												if (clTor1 == coup[1] && clTor2 == coup[0]) {
-													if (coup[2] == 3) { // Si l'on doit
-																		// retourner une tortue
-														if (choixTortue == 0) {
-															choix = true;
-															invalidate();
-															return false;
-														}
-					
-													} else if (coup[2] != 0) {
-														conf.coupJoue(Configuration.en81(clTor1),
-																coup[2], Configuration.en81(clTor2));
-														tcercle.clear();
-														saute = coup[2];
-														clTor1 = clTor2;
-														clTor2 = -1;
-														a = true;
-													} else {
-														conf.coupJoue(Configuration.en81(clTor1),
-																(byte) 0,
-																Configuration.en81(clTor2));
-														saute = 0;
-														a = true;
-													}
-												}
-											}
-											suiteAction();
-										}
-					
-									}
 							}
 						}
+						suiteAction();
+					}
 
-			appelThreadIa();
-					
+				}
+
 			}
+			appelThreadIa();
+		}
 		return true;
-	}
 
+	}
 	private void appelThreadIa() {
 		// TODO Auto-generated method stub
 		if (!multi && conf.getPlayer() == 2 && !win && !threadD) {
