@@ -823,7 +823,7 @@ public class Plateau extends View {
 				choixTortue = isChoixClick(x, y); // Attend l'appui sur l'une
 													// des deux tortues
 				if (choixTortue != 0) {
-					choix = false; // si le choix a été fait, on remet à zéro
+					choix = false; // si le choix a ï¿½tï¿½ fait, on remet ï¿½ zï¿½ro
 					/* Choix de la tortue */
 					conf.coupJoue(Configuration.en81(clTor1), choixTortue,
 							Configuration.en81(clTor2));
