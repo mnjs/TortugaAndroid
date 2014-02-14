@@ -182,24 +182,15 @@ public class Configuration implements Comparable<Configuration>{
 	 */
 	public Configuration(boolean varianteEclo) {
 		tPlateau = new byte[]{-1,-1,-1,-1,-1,-1,-1,-1,-1,
-							  -1,-1,-1,-1, 0, 0, 0, 0,-1,	//		 ______
-							  -1,-1,-1, 0, 0, 0, 0, 0,-1,	//		/	   |
-							  -1,-1, 0, 0, 0, 0, 0, 0,-1,	//	   /	V  |
-							  -1, 0, 0, 0, 0, 0, 0, 0,-1,	//	  |		   |
-							  -1, 0, 0, 0, 0, 0, 0,-1,-1,	//	  |	      /
-							  -1, 0, 0, 0, 0, 0,-1,-1,-1,	//	  |	R    /
-							  -1, 0, 0, 0, 0,-1,-1,-1,-1,	//	  |_____/
-							  -1,-1,-1,-1,-1,-1,-1,-1,-1};
+							    -1,-1,-1,-1, 0, 0, 0, 0,-1,	//		 ______
+							    -1,-1,-1, 0, 0, 0, 0, 0,-1,	//		/	   |
+							    -1,-1, 0, 0, 0, 0, 0, 0,-1,	//	   /	V  |
+							    -1, 0, 0, 0, 0, 0, 0, 0,-1,	//	  |		   |
+							    -1, 0, 0, 0, 0, 0, 0,-1,-1,	//	  |	      /
+							    -1, 0, 0, 0, 0, 0,-1,-1,-1,	//	  |	R    /
+							    -1, 0, 0, 0, 0,-1,-1,-1,-1,	//	  |_____/
+							    -1,-1,-1,-1,-1,-1,-1,-1,-1};
 		
-		/*tPlateau = new byte[]{-1,-1,-1,-1,-1,-1,-1,-1,-1,
-				  -1,-1,-1,-1, 0, 0, 2, 2,-1,	//		 ______
-				  -1,-1,-1, 2, 0, 0, 2, 2,-1,	//		/	   |
-				  -1,-1, 0, 0, 3, 0, 0, 2,-1,	//	   /	V  |
-				  -1, 1, 0, 0, 0, 0, 0, 2,-1,	//	  |		   |
-				  -1, 1, 0, 3, 0, 0, 0,-1,-1,	//	  |	      /
-				  -1, 1, 0, 1, 0, 0,-1,-1,-1,	//	  |	R    /
-				  -1, 1, 0, 1, 1,-1,-1,-1,-1,	//	  |_____/
-				  -1,-1,-1,-1,-1,-1,-1,-1,-1};*/
 		eval = 0;
 		player = 2;
 		opponent = 1;
@@ -616,6 +607,19 @@ public class Configuration implements Comparable<Configuration>{
 		}else{ 
 			return lMoveObligatoire;
 		}
+	}
+	
+	public ArrayList<byte[]> retourneCoupObligatoire() {
+		ArrayList<byte[]> lMoveObligatoire = new ArrayList<byte[]>();
+		ArrayList<byte[]> lMovePossible = new ArrayList<byte[]>();
+		lMovePossible = allPossibleMove();
+		
+		for (byte i = 0; i < lMovePossible.size(); i++) {
+			if (lMovePossible.get(i)[1] == opponent || lMovePossible.get(i)[1] == 3) {
+				lMoveObligatoire.add(lMovePossible.get(i));
+			}
+		}
+		return lMoveObligatoire;
 	}
 	
 	/**

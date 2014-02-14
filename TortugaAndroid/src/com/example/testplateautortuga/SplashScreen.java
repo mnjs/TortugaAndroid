@@ -19,7 +19,7 @@ public class SplashScreen extends MainActivity {
 			public void run() {
 
 				try {
-					sleep(200); //3000
+					sleep(3000); //3000
 					Intent i = new Intent(getBaseContext(), MainActivity.class);
 					startActivity(i);
 					finish();

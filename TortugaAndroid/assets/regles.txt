@@ -2,9 +2,9 @@ RAPPEL DES REGLES DE BASE
 ~~~ BUT DU JEU ~~~
 Amener une de ses tortues sur la case la plus extrême du camp adverse.
 ~~~ PREPARATION ~~~
-Chaque joueur dispose ses 8 tortues sur leurs bases de départ.
+Chaque joueur dispose de 8 tortues sur leurs bases de départ.
 ~~~ DEPLACEMENTS ET SAUTS ~~~
-Un tirage au sort détermine qui commence.
+Lors de la premi�re utilisation, les tortues rouges commence.
 A tour de rôle chaque joueur déplace une de ses tortues selon les règles suivantes :
 - une tortue se déplace toujours en avançant, tout droit ou sur le côté, mais jamais en reculant.
 - si elle ne saute pas (voir ci-dessous), une tortue ne se déplace que d'une seule case.
