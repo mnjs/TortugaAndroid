@@ -12,7 +12,6 @@ public class PlateauWindows extends MainActivity {
 		boolean mode = b.getBoolean("mode");
 		boolean eclosion = b.getBoolean("eclosion");
 		int difficulte = b.getInt("difficulte");
-		
 		setContentView(new Plateau(this,mode,eclosion,difficulte,this));
 		
 	}

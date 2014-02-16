@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
@@ -16,8 +17,12 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
+import android.text.Layout;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 //import android.widget.LinearLayout;
 
@@ -113,8 +118,10 @@ public class Plateau extends View {
 	private int tailleTortueChoix;
  
 	private boolean a = false;
-	private boolean rejouer = false;
-
+	private boolean rejouer = false;  
+	
+	private ProgressDialog progressDialog;
+	
 	private MediaPlayer mPlayer = null;
 	private PlateauWindows plateau = null;
 	// ------------------------------------------------------------------------------------------
@@ -221,6 +228,8 @@ public class Plateau extends View {
 		this.multi = multi;
 		this.variante = variante;
 		this.difficulte = difficulte;
+		
+		this.progressDialog = new ProgressDialog(context);
 
 		tPoly = new Polygon[37];
 		tPoint = new Point[37];
@@ -266,10 +275,7 @@ public class Plateau extends View {
 	 * 
 	 * @param g
 	 */
-	public void drawImage(Bitmap nom, float x, float y, int l, int h) { // Coordonnées
-																		// x+y
-																		// et
-																		// longueur+hauteur
+	public void drawImage(Bitmap nom, float x, float y, int l, int h) { // Coordonnées x+y et longueur+hauteur
 		Bitmap resizedImage = Bitmap.createScaledBitmap(nom, l, h, true);
 		canvas.drawBitmap(resizedImage, x, y, null);
 	}
@@ -457,6 +463,7 @@ public class Plateau extends View {
 
 		dessinerTexte(Color.WHITE, largeurEcran / 20, R.string.choixTortue,
 				(int) (largeurEcran / 1.8), (int) (longueurEcran / 3));
+		
 		drawImage(trouge, xChoixRouge, yChoixRouge, tailleTortueChoix,
 				tailleTortueChoix);
 		drawImage(choixvertdroite, xChoixVerte, yChoixVerte, tailleTortueChoix,
@@ -749,23 +756,12 @@ public class Plateau extends View {
 
 	public class Swingworker extends AsyncTask<Void, Void, Void> {
 
-		/*
-		 * protected void onPreExecute() { //bar = (ProgressBar)
-		 * findViewById(R.id.progressBar1); //bar.setVisibility(View.VISIBLE); }
-		 */
-		protected void onPreExecute() {
-
-			/*bar = new android.widget.ProgressBar(
-	                context,
-	                null,
-	                android.R.attr.progressBarStyle);*/
-
-			//bar.getIndeterminateDrawable().setColorFilter(0xFFFF0000, android.graphics.PorterDuff.Mode.MULTIPLY);
-			//bar.setVisibility(Plateau.VISIBLE);
-			/*bar = new ProgressBar(context, null,
-					android.R.attr.progressBarStyleSmall);
-			bar.setVisibility(View.VISIBLE);
-			bar.bringToFront();*/
+		protected void onPreExecute() { 
+			if(difficulte > 3){
+				progressDialog.getWindow().setGravity(Gravity.TOP);
+				progressDialog.show();
+				progressDialog.setContentView(R.layout.chargement);	
+			}
 		}
 
 		@Override
@@ -784,7 +780,9 @@ public class Plateau extends View {
 		}
 
 		protected void onPostExecute(Void unused) {
-		   // bar.setVisibility(context);
+			if(difficulte > 3){
+				progressDialog.dismiss();				
+			}
 			verifWin();
 		}
 
@@ -800,7 +798,7 @@ public class Plateau extends View {
 		a = false;
 
 		if (choix) {
-			if (evt.getAction() == MotionEvent.ACTION_DOWN) {
+			if (evt.getAction() == MotionEvent.ACTION_DOWN ) {
 				int x = (int) evt.getX();
 				int y = (int) evt.getY();
 
