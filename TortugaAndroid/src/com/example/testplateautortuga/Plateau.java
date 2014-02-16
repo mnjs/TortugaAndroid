@@ -118,7 +118,7 @@ public class Plateau extends View {
 	private int tailleTortueChoix;
  
 	private boolean a = false;
-	private boolean rejouer = false;  
+	private boolean partieFinie = false;  
 	
 	private ProgressDialog progressDialog;
 	
@@ -348,7 +348,7 @@ public class Plateau extends View {
 
 		if (win == true) {
 			afficherVainqueur();
-			rejouer = true;
+			partieFinie = true;
 		}
 
 	}
@@ -662,7 +662,7 @@ public class Plateau extends View {
 						}
 						win = false;
 						invalidate();
-						rejouer = false;
+						partieFinie = false;
 						affPossibleMove();
 					}
 				});
@@ -790,9 +790,9 @@ public class Plateau extends View {
 
 	public boolean onTouchEvent(MotionEvent evt) {
 
-		if (evt.getAction() == MotionEvent.ACTION_DOWN && rejouer) {
+		if (evt.getAction() == MotionEvent.ACTION_DOWN && partieFinie) {
 			reset();
-			rejouer = false;
+			partieFinie = false;
 		}
 
 		a = false;
@@ -805,9 +805,9 @@ public class Plateau extends View {
 				choixTortue = isChoixClick(x, y); // Attend l'appui sur l'une
 													// des deux tortues
 				if (choixTortue != 0) {
-					choix = false; // si le choix a �t� fait, on remet �
-									// z�ro
-					/* Choix de la tortue */
+					choix = false; // si le choix a été fait, on remet à
+									// zéro
+					/* Choix de la tortue (code exisant)*/
 					conf.coupJoue(Configuration.en81(clTor1), choixTortue,
 							Configuration.en81(clTor2));
 					choixTortue = 0;
