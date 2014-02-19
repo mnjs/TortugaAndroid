@@ -3,6 +3,7 @@ package com.example.testplateautortuga;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Locale;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -15,9 +16,17 @@ public class Regles extends MainActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.regles);
 		
+		String path = null;
+		if(Locale.getDefault().getLanguage().equals("en")){
+			path="regles-EN.txt";			
+		}
+		if(Locale.getDefault().getLanguage().equals("fr")){
+			path="regles-FR.txt";			
+		}
+		
 		try {
 			BufferedReader fic = new BufferedReader(new InputStreamReader(this
-					.getAssets().open("regles.txt")));
+					.getAssets().open(path)));
 
 			String regles = "";
 			String ligne = null;

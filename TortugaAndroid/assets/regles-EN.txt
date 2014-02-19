@@ -1,0 +1,29 @@
+﻿SUMMARY OF BASIC RULES
+~~~ GOAL ~~~
+Bring one of his turtles on the most extreme case of the opponent.
+~~~ PREPARATION ~~~
+Each player has 8 turtles on their starting points.
+~~~ DISPLACEMENT AND JUMPS ~~~
+At first use, the red turtles begins.
+In turn each player moves one of his turtles using the following rules :
+- a turtle always moves forward, straight or sideways, but never backwards.
+- if it does not jump (see below), a turtle moves only one space.
+- a turtle can jump over a turtle friend, enemy or neutralized turtles (see below), always forward.
+- a jump starting a friend turtle or neutralized turtles is not obligatory.
+- but jump over an opponent turtle is mandatory.
+- when a jump has been started, it must be brought to an end by jumping as possible.
+- in a same time, a turtle can jump over turtle friends and neutralized or she can jump over 
+enemy and neutralized turtles. However a turtle should not jump in the same turn over 
+friendly and enemy turtles.
+~~~ EFFECT OF JUMPS ~~~
+- A jumping turtle friend is not returned (no effect).
+- A jumping opponent turtle is returned immediately on the back. It then becomes a turtle neutralized 
+unable to move.
+- A turtle neutralized (on the back) immediately jumped back on his feet. According to their interests, the player 
+who made the jump chooses the direction to him, he can integrate this turtle team or team 
+opponent (which is sometimes advantageous) by turning in the direction opposing turtles.
+~~~ END OF THE GAME ~~~
+The first player to reach with one of its turtles the most extreme case the opponent wins. 
+Special case: if a player is unable to play, he loses the game.
+
+
